@@ -80,7 +80,7 @@ public class HiveAdminService implements OCDPAdminService {
         	try {
                 hdfsAdminService.setQuota(path, "-1", quota.get(OCDPConstants.HDFS_STORAGE_QUOTA));
                 return;
-			} catch (PathIOException e) {
+			} catch (IOException e) {
 				// In case path hasn't been created yet
 				if (loop++ < 5) {
 					logger.warn("Path abnormal while setting quota, waiting and retrying: "+ loop  + ", "+ e.getMessage());
