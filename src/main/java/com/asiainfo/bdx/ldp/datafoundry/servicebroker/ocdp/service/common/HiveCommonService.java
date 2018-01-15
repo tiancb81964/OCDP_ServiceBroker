@@ -66,7 +66,7 @@ public class HiveCommonService {
         this.conf = new Configuration();
         
         this.hiveJDBCUrl = "jdbc:hive2://" + this.clusterConfig.getHiveHost() + ":" + this.clusterConfig.getHivePort() +
-                "/default";
+                "/default;user=" + this.clusterConfig.getHiveSuperUser() + ";password=" + this.clusterConfig.getHiveSuperUserKeytab();
         
         if (krb_enabled) {
             conf.set("hadoop.security.authentication", "Kerberos");

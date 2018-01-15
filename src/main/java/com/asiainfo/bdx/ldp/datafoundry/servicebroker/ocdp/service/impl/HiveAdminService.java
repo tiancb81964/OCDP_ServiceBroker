@@ -6,15 +6,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.hadoop.fs.PathIOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
-import com.asiainfo.bdx.ldp.datafoundry.servicebroker.ocdp.config.CatalogConfig;
 import com.asiainfo.bdx.ldp.datafoundry.servicebroker.ocdp.client.etcdClient;
+import com.asiainfo.bdx.ldp.datafoundry.servicebroker.ocdp.config.CatalogConfig;
 import com.asiainfo.bdx.ldp.datafoundry.servicebroker.ocdp.config.ClusterConfig;
 import com.asiainfo.bdx.ldp.datafoundry.servicebroker.ocdp.model.ServiceInstance;
 import com.asiainfo.bdx.ldp.datafoundry.servicebroker.ocdp.service.OCDPAdminService;
@@ -61,7 +60,7 @@ public class HiveAdminService implements OCDPAdminService {
 
         Map<String, String> quota = this.getQuotaFromPlan(serviceDefinitionId, planId, parameters);
 //        String dbName = hiveCommonService.createDatabase(serviceInstanceId);
-        String dbName = hiveCommonService.createDatabase(resource.replaceAll("-", ""));
+        String dbName = hiveCommonService.createDatabase(resource.replaceAll("-", "").toLowerCase());
         // Set database storage quota
         if(dbName != null){
         	setQuota(dbName, quota);
@@ -80,7 +79,7 @@ public class HiveAdminService implements OCDPAdminService {
         	try {
                 hdfsAdminService.setQuota(path, "-1", quota.get(OCDPConstants.HDFS_STORAGE_QUOTA));
                 return;
-			} catch (PathIOException e) {
+			} catch (IOException e) {
 				// In case path hasn't been created yet
 				if (loop++ < 5) {
 					logger.warn("Path abnormal while setting quota, waiting and retrying: "+ loop  + ", "+ e.getMessage());
