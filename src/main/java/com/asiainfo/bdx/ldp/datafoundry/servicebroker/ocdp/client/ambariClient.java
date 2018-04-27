@@ -236,6 +236,10 @@ public class ambariClient {
             if(response.getStatusLine().getStatusCode() == 200){
                 responseDef = EntityUtils.toString(response.getEntity());
             }
+            else {
+				logger.error("HTTP response code not 200: " + response.getStatusLine().getStatusCode() + "=" + response.getStatusLine().getReasonPhrase());
+				logger.error("HTTP response body: " + response.getEntity());
+			}
             response.close();
         }catch (IOException e){
         	logger.error("Error while execute HTTP request: " + request.getURI(), e);
