@@ -1,20 +1,16 @@
 package com.asiainfo.bdx.ldp.datafoundry.servicebroker.ocdp.utils;
 
-import com.asiainfo.bdx.ldp.datafoundry.servicebroker.ocdp.model.CapacitySchedulerConfig;
-import com.google.common.base.Splitter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
+
+import com.asiainfo.bdx.ldp.datafoundry.servicebroker.ocdp.model.CapacitySchedulerConfig;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
 
 /**
  * Created by Aaron on 16/7/26.
  */
 public class YarnCapacityCalculator {
-
-    private Logger logger = LoggerFactory.getLogger(YarnCapacityCalculator.class);
     private Map<String,String> properties;
     private String allQueues;
     private Double totalMemory;
@@ -189,7 +185,7 @@ public class YarnCapacityCalculator {
     }
 
     private void setNewQueueCapacity(String queueName, String targetQueueCapacity) {
-    	if (allQueues.indexOf(queueName) < 0) {
+    	if (!Lists.newArrayList(allQueues.split(",")).contains(queueName)) {
             properties.replace("yarn.scheduler.capacity.root.queues",allQueues,allQueues+","+queueName);
 		}
         properties.put("yarn.scheduler.capacity.root."+queueName+".capacity",targetQueueCapacity);
