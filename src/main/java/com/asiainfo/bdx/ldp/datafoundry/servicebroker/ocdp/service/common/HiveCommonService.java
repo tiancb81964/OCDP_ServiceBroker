@@ -1,5 +1,7 @@
 package com.asiainfo.bdx.ldp.datafoundry.servicebroker.ocdp.service.common;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -66,7 +68,7 @@ public class HiveCommonService {
         this.conf = new Configuration();
         
         this.hiveJDBCUrl = "jdbc:hive2://" + this.clusterConfig.getHiveHost() + ":" + this.clusterConfig.getHivePort() +
-                "/default;user=" + this.clusterConfig.getHiveSuperUser() + ";password=" + this.clusterConfig.getHiveSuperUserKeytab();
+                "/default;user=" + this.clusterConfig.getHiveSuperUser() + passwordString();
         
         if (krb_enabled) {
             conf.set("hadoop.security.authentication", "Kerberos");
@@ -76,6 +78,16 @@ public class HiveCommonService {
 		}
     }
 
+	private String passwordString() {
+		try {
+			String encoded = URLEncoder.encode(this.clusterConfig.getHiveSuperUserKeytab().trim(), "UTF-8");
+			return ";password=" + encoded;
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+	}
+	
     public String createDatabase(String databaseName) throws Exception{
         try{
         	if (krb_enabled) {
